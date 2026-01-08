@@ -170,11 +170,11 @@ function App() {
         style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={handleMouseEnter} // Touch support: Tap to open
       >
         <motion.button
           whileHover={{ rotate: 90, scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
+          onClick={() => setShowSettings(!showSettings)} // Toggle on click
           style={{
             background: 'rgba(255,255,255,0.1)',
             backdropFilter: 'blur(10px)',
@@ -200,7 +200,8 @@ function App() {
                 marginTop: '10px',
                 padding: '25px',
                 width: '340px',
-                background: 'rgba(20, 20, 25, 0.85)', // Darker, cleaner background
+                maxWidth: '90vw', // Responsive width
+                background: 'rgba(20, 20, 25, 0.85)',
                 backdropFilter: 'blur(20px)',
                 borderRadius: '24px',
                 border: '1px solid rgba(255,255,255,0.08)',
@@ -284,7 +285,7 @@ function App() {
                               color: '#fff',
                               cursor: 'pointer',
                               outline: 'none',
-                              appearance: 'none', // Remove default arrow if willing to add custom one, or keep for simplicity
+                              appearance: 'none',
                               fontWeight: 500
                             }}
                           >
@@ -358,9 +359,6 @@ function App() {
               transition={{ type: "spring", stiffness: 100 }}
               style={{ padding: '30px 20px', margin: '20px auto', maxWidth: '400px', borderRadius: '30px', position: 'relative', overflow: 'hidden' }}
             >
-              {/* Ghibli Background Element for Hero */}
-
-
               <p style={{ textTransform: 'uppercase', fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 700, letterSpacing: '1px', position: 'relative', zIndex: 1 }}>Next Prayer</p>
               <h2 style={{ fontSize: '3.5rem', margin: '5px 0', background: 'linear-gradient(45deg, var(--text-primary), var(--text-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', position: 'relative', zIndex: 1 }}>
                 {nextPrayer.name}
@@ -383,6 +381,7 @@ function App() {
             transition={{ delay: index * 0.1 }}
             onMouseEnter={() => setHoveredPrayer(p)}
             onMouseLeave={() => setHoveredPrayer(null)}
+            onClick={() => setHoveredPrayer(p)} // Touch support: tap to open
             style={{
               padding: '16px 20px',
               display: 'flex',
@@ -424,12 +423,12 @@ function App() {
               top: 0,
               right: 0,
               width: '320px',
-              maxWidth: '80vw',
+              maxWidth: '85vw', // Responsive
               height: '100vh',
-              background: 'var(--card-bg)', // Dark glass from variable
+              background: 'var(--card-bg)',
               backdropFilter: 'blur(30px)',
               zIndex: 200,
-              boxShadow: '-10px 0 40px rgba(0,0,0,0.5)', // Deeper shadow
+              boxShadow: '-10px 0 40px rgba(0,0,0,0.5)',
               padding: '40px',
               display: 'flex',
               flexDirection: 'column',
@@ -437,6 +436,22 @@ function App() {
               borderLeft: '1px solid rgba(255,255,255,0.1)'
             }}
           >
+            {/* Close Button for touch users */}
+            <button
+              onClick={() => setHoveredPrayer(null)}
+              style={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                background: 'transparent',
+                padding: '10px',
+                borderRadius: '50%',
+                color: 'var(--text-secondary)'
+              }}
+            >
+              <FaTimes size={20} />
+            </button>
+
             <div style={{ textAlign: 'center', marginBottom: '30px' }}>
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
@@ -477,7 +492,7 @@ function App() {
       </AnimatePresence>
 
       <footer style={{ textAlign: 'center', marginTop: '60px', opacity: 0.6, fontSize: '0.8rem' }}>
-        <p>© 2026 Sheffield Prayer Times</p>
+        <p> 2026 Sheffield Prayer Times</p>
       </footer>
     </div>
   )
