@@ -170,6 +170,7 @@ function App() {
         style={{ position: 'absolute', top: '20px', right: '20px', zIndex: 100, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={handleMouseEnter} // Touch support: Tap to open
       >
         <motion.button
           whileHover={{ rotate: 90, scale: 1.1 }}
