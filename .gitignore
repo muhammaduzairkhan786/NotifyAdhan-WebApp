@@ -32,6 +32,9 @@ thumbs.db
 .env.production.local
 
 # Build
-build/
+build/*
 dist/
+
+# Allow Release APK
+!android/app/build/outputs/apk/release/app-release.apk
 
