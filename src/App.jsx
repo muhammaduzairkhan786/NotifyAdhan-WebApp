@@ -1,9 +1,9 @@
 import { useMemo, useState, useEffect, useRef } from 'react'
 import { usePrayerTimes } from './hooks/usePrayerTimes'
 import AudioPlayer from './components/AudioPlayer'
-import { PRAYER_VIRTUES } from './data/virtues'
+import { PRAYER_DATA } from './data/virtues'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaBell, FaBellSlash, FaCog, FaTimes, FaMoon, FaSun, FaPlay, FaStop } from 'react-icons/fa'
+import { FaBell, FaBellSlash, FaCog, FaTimes, FaMoon, FaSun, FaPlay, FaStop, FaBookOpen, FaStar } from 'react-icons/fa'
 import './index.css'
 
 function App() {
@@ -34,12 +34,16 @@ function App() {
 
   const { times, date, nextPrayer, timeRemaining, loading, error } = usePrayerTimes('Sheffield', 'UK', settings.school, settings.method);
 
-  // Virtue Logic
-  const activeVirtue = useMemo(() => {
+  // Prayer Info Logic
+  const activeInfo = useMemo(() => {
     if (!hoveredPrayer) return null;
-    const virtues = PRAYER_VIRTUES[hoveredPrayer.name];
-    if (!virtues) return null;
-    return virtues[Math.floor(Math.random() * virtues.length)];
+    const data = PRAYER_DATA[hoveredPrayer.name];
+    if (!data) return null;
+
+    return {
+      virtue: data.virtues[Math.floor(Math.random() * data.virtues.length)],
+      recommendation: data.recommendations[Math.floor(Math.random() * data.recommendations.length)]
+    };
   }, [hoveredPrayer]);
 
   const getPrayerTimes = (prayerName) => {
@@ -432,7 +436,6 @@ function App() {
               padding: '40px',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
               borderLeft: '1px solid rgba(255,255,255,0.1)'
             }}
           >
@@ -476,17 +479,47 @@ function App() {
               </div>
             </div>
 
-            {activeVirtue && (
-              <div style={{ position: 'relative', marginTop: 'auto' }}>
-                <div style={{ position: 'absolute', top: '-20px', left: '0', fontSize: '4rem', color: 'var(--accent-color)', opacity: 0.1, fontFamily: 'serif', lineHeight: 1 }}>"</div>
-                <p style={{ fontStyle: 'italic', marginBottom: '15px', lineHeight: '1.6', fontSize: '1rem', color: 'var(--text-primary)', position: 'relative', zIndex: 1, paddingLeft: '15px' }}>
-                  {activeVirtue?.text}
-                </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'right', fontWeight: 600 }}>
-                  — {activeVirtue?.source}
-                </p>
-              </div>
-            )}
+            <div style={{ flex: 1, overflowY: 'auto', paddingRight: '10px' }} className="side-panel-content">
+              {activeInfo?.virtue && (
+                <div style={{ position: 'relative', marginBottom: '30px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: 'var(--accent-color)' }}>
+                    <FaStar size={14} />
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 700 }}>Virtue</span>
+                  </div>
+                  <p style={{ fontStyle: 'italic', marginBottom: '10px', lineHeight: '1.6', fontSize: '0.95rem', color: 'var(--text-primary)', borderLeft: '3px solid var(--accent-color)', paddingLeft: '15px' }}>
+                    {activeInfo.virtue.text}
+                  </p>
+                  <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textAlign: 'right', fontWeight: 600 }}>
+                    — {activeInfo.virtue.source}
+                  </p>
+                </div>
+              )}
+
+              {activeInfo?.recommendation && (
+                <div style={{ position: 'relative', padding: '20px', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px', color: '#10B981' }}>
+                    <FaBookOpen size={14} />
+                    <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: 700 }}>Recommended</span>
+                  </div>
+
+                  <h4 style={{ margin: '0 0 10px 0', fontSize: '1.1rem', color: 'var(--text-primary)' }}>{activeInfo.recommendation.title}</h4>
+
+                  {activeInfo.recommendation.arabic && (
+                    <p dir="rtl" style={{ fontSize: '1.5rem', marginBottom: '15px', color: 'var(--text-primary)', fontFamily: 'serif', textAlign: 'center', lineHeight: '2' }}>
+                      {activeInfo.recommendation.arabic}
+                    </p>
+                  )}
+
+                  <p style={{ marginBottom: '10px', lineHeight: '1.6', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                    {activeInfo.recommendation.text}
+                  </p>
+
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', textAlign: 'right', fontWeight: 600 }}>
+                    — {activeInfo.recommendation.source}
+                  </p>
+                </div>
+              )}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
